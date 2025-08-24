@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revolt Motors Voice Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Revolt Motors Voice Assistant</h1>
+            <p>Tap the microphone to start/stop listening</p>
+        </header>
+
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages"></div>
+            
+            <div class="controls">
+                <button id="mic-btn" class="btn btn-primary">
+                    <span class="icon"><i class="fas fa-microphone"></i></span> Start Listening
+                </button>
+                <button id="stop-btn" class="btn btn-secondary" disabled>
+                    <span class="icon"><i class="fas fa-stop"></i></span> Stop All
+                </button>
+            </div>
+
+            <div class="status">
+                <div id="status-indicator" class="status-indicator"></div>
+                <span id="status-text">Ready to connect</span>
+            </div>
+        </div>
+
+        <div class="info">
+            <h3>How to use:</h3>
+            <ol>
+                <li>Tap the microphone button to start listening</li>
+                <li>Tap again to stop and process your request</li>
+                <li>Tap "Stop All" to immediately stop any ongoing response</li>
+                <li>Ask about Revolt Motors products and services</li>
+            </ol>
+        </div>
+    </div>
+
+    <audio id="response-audio" hidden></audio>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

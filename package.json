@@ -1,0 +1,35 @@
+{
+  "name": "revolt-voice-chat",
+  "version": "1.0.0",
+  "description": "Real-time voice chat using Gemini Live API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "dotenv": "^17.2.1",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "keywords": [
+    "gemini",
+    "voice-chat",
+    "revolt-motors",
+    "ai"
+  ],
+  "author": "Ajay Kumar Sah",
+  "license": "MIT"
+}
+{
+  "scripts": {
+    "venv": "npm install",
+    "activate": "echo 'Node.js environment ready - dependencies in node_modules/'",
+    "deactivate": "echo 'To remove dependencies, delete node_modules folder'"
+  }
+}
