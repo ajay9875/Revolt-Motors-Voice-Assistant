@@ -22,6 +22,8 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 console.log('Using Gemini API Key:', GEMINI_API_KEY ? 'Present' : 'Missing');
+console.log("Gemini URL:", GEMINI_URL);
+
 // System instructions for Revolt Motors focus
 const SYSTEM_INSTRUCTIONS = `
 You are "Rev", the official voice assistant for Revolt Motors, India's leading electric vehicle company.
@@ -35,7 +37,7 @@ LANGUAGE RULES:
 CORE RESPONSE GUIDELINES:
 1. Focus exclusively on Revolt Motors products, services, initiatives, and electric vehicles
 2. Be enthusiastic, helpful, and conversational
-3. Keep responses concise (4-5 sentences maximum)
+3. Keep responses concise (try to include all sentences)
 4. After answering, always ask: "Would you like to know more about this?" (English) or "Kya aap is bare mein aur janna chahenge?" (Hindi)
 5. Politely redirect unrelated questions back to Revolt Motors topics
 
@@ -77,15 +79,16 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
         role: "user",
         parts: [{
           inline_data: {
-            //mime_type: "audio/webm",
-            mime_type: "audio/webm; codecs=opus",
+            mime_type: "audio/webm",
+            //mime_type: "audio/webm; codecs=opus",
             data: audioBase64
           }
         }]
       }],
       generation_config: {
         temperature: 0.7,
-        max_output_tokens: 150
+        max_output_tokens: 150,
+        //language: "auto"
       }
     };
 
