@@ -56,6 +56,24 @@ if (!fs.existsSync(uploadsDir)) {
 // Store audio files temporarily - FIXED for deployment
 const upload = multer({ dest: uploadsDir });
 
+// helper function to keep only last 3 files
+function maintainLastThreeFiles() {
+  const files = fs.readdirSync(uploadsDir)
+    .map(file => ({
+      name: file,
+      time: fs.statSync(path.join(uploadsDir, file)).mtime.getTime()
+    }))
+    .sort((a, b) => b.time - a.time); // newest first
+
+  if (files.length > 3) {
+    const oldFiles = files.slice(3); // beyond latest 3
+    oldFiles.forEach(f => {
+      fs.unlinkSync(path.join(uploadsDir, f.name));
+      console.log(`Deleted old file: ${f.name}`);
+    });
+  }
+}
+
 // API endpoint to process audio with Gemini
 app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
   try {
@@ -70,6 +88,9 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
     // Clean up the uploaded file immediately
     fs.unlinkSync(req.file.path);
 
+    // keep only 3 latest uploads
+    maintainLastThreeFiles();
+    
     // Prepare the request for Gemini API
     const requestBody = {
       system_instruction: {
