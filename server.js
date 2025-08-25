@@ -18,7 +18,7 @@ app.use(express.json());
 // Get API key from environment variables
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 // Using gemini-2.0-flash which is widely available
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // System instructions for Revolt Motors focus
 const SYSTEM_INSTRUCTIONS = `You are "Rev", the voice assistant for Revolt Motors, an electric vehicle company. 
@@ -54,7 +54,7 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
         parts: [{
           inline_data: {
             //mime_type: "audio/webm",
-            mime_type: req.file.mimetype,   // detect actual format
+            mime_type: "audio/webm; codecs=opus", // UPDATED: More specific MIME type
             data: audioBase64
           }
         }]

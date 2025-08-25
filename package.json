@@ -1,6 +1,7 @@
 {
   "name": "revolt-voice-chat",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "Real-time voice chat using Gemini Live API",
   "main": "server.js",
   "engines": {
