@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 // Get API key from environment variables
-const GEMINI_API_KEY = process.env.gemini_api_key;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 console.log('Using Gemini API Key:', GEMINI_API_KEY ? 'Present' : 'Missing');
@@ -60,7 +60,8 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
         role: "user",
         parts: [{
           inline_data: {
-            mime_type: "audio/webm",
+            //mime_type: "audio/webm",
+            mime_type: "audio/webm; codecs=opus",
             data: audioBase64
           }
         }]
