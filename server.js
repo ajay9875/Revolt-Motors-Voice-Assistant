@@ -51,10 +51,6 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
     // Clean up the uploaded file immediately
     fs.unlinkSync(req.file.path);
 
-    // DEBUG: Log file info
-    console.log('Processing audio file:', req.file);
-    console.log('File size:', audioFile.length, 'bytes');
-
     // Prepare the request for Gemini API
     const requestBody = {
       system_instruction: {
@@ -64,7 +60,7 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
         role: "user",
         parts: [{
           inline_data: {
-            mime_type: "audio/webm; codecs=opus",
+            mime_type: "audio/webm",
             data: audioBase64
           }
         }]
@@ -74,9 +70,6 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
         max_output_tokens: 150
       }
     };
-
-    // DEBUG: Log API request
-    console.log('Sending request to Gemini API');
 
     // Call Gemini API
     const response = await axios.post(GEMINI_URL, requestBody, {
@@ -111,13 +104,7 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
     });
 
   } catch (error) {
-    // Enhanced error logging for deployment debugging
-    console.error('Full error details:', {
-      message: error.message,
-      responseData: error.response?.data,
-      responseStatus: error.response?.status,
-      stack: error.stack
-    });
+    console.error('Error calling Gemini API:', error.response?.data || error.message);
     
     // Send appropriate error response to frontend
     if (error.response?.status === 429) {
@@ -129,14 +116,12 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
         error: 'API model not found. Please check configuration.' 
       });
     } else if (error.response?.status === 400) {
-      // More detailed error message
-      const geminiError = error.response?.data?.error?.message || 'Unknown audio format error';
       res.status(400).json({ 
-        error: `Invalid audio format (${geminiError}). Please try recording again.` 
+        error: 'Invalid request. Please check your audio format.' 
       });
     } else {
       res.status(500).json({ 
-        error: 'Server error: ' + (error.response?.data?.error?.message || error.message)
+        error: 'Failed to process audio: ' + (error.response?.data?.error?.message || error.message)
       });
     }
   }
@@ -145,5 +130,4 @@ app.post('/api/process-audio', upload.single('audio'), async (req, res) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Uploads directory: ${uploadsDir}`);
 });
