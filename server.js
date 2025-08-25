@@ -17,9 +17,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 // Get API key from environment variables
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.gemini_api_key;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
+console.log('Using Gemini API Key:', GEMINI_API_KEY ? 'Present' : 'Missing');
 // System instructions for Revolt Motors focus
 const SYSTEM_INSTRUCTIONS = `You are "Rev", the voice assistant for Revolt Motors, an electric vehicle company. 
 Your role is to assist users with information about Revolt Motors products, services, and initiatives.
