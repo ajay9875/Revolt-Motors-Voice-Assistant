@@ -90,7 +90,7 @@ class VoiceChat {
             this.mediaRecorder.stop();
             this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
             this.setListeningState(false);
-            this.addMessage('system', 'Processing your request...');
+            //this.addMessage('system', 'Processing your request...');
         }
     }
 
@@ -120,7 +120,7 @@ class VoiceChat {
             this.responseAudio.currentTime = 0;
             
             this.setSpeakingState(false);
-            this.addMessage('system', 'Response stopped');
+            this.addMessage('system', 'Stop All button pressed');
         }
     }
 
@@ -322,11 +322,12 @@ findMaleVoice(voices, languageCode, malePatterns) {
         this.isListening = listening;
         
         if (listening) {
-            this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone-slash"></i></span> Stop Listening';
+            this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone"></i></span>';
             this.micBtn.classList.add('listening');
             this.updateStatus('listening', 'Listening...');
-        } else {
-            this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone"></i></span> Start Listening';
+        } 
+        else {
+            this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone-slash"></i></span>';
             this.micBtn.classList.remove('listening');
         }
         

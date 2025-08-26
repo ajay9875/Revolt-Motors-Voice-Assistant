@@ -6,20 +6,22 @@
     <title>Revolt Motors Voice Chat</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="static/favicon.png">
 </head>
 <body>
     <div class="container">
         <header>
+            <span><img src="static/favicon.png" alt="Revolt Motors Logo" height="60px" weight="60px"></span>
             <h1>Revolt Motors Voice Assistant</h1>
             <p>Tap the microphone to start/stop listening</p>
         </header>
 
         <div class="chat-container">
-            <div id="chat-messages" class="chat-messages"></div>
-            
+            <div id="chat-messages" class="chat-messages"><p padding="10px" style="background: rgb(150, 149, 149); border: 1px solid #ccc; border-radius: 5px; padding: 10px; overflow-y: auto;">Hi, I’m Rev – your Revolt Motors voice assistant! <br> I’m here to help you explore Revolt Motors or electric vehicles.</p></div>
+
             <div class="controls">
                 <button id="mic-btn" class="btn btn-primary">
-                    <span class="icon"><i class="fas fa-microphone"></i></span> Start Listening
+                    <span class="icon"><i class="fas fa-microphone-slash"></i></span>
                 </button>
                 <button id="stop-btn" class="btn btn-secondary" disabled>
                     <span class="icon"><i class="fas fa-stop"></i></span> Stop All
