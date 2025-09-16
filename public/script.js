@@ -49,7 +49,7 @@ class VoiceChat {
     async startListening() {
         try {
             this.setListeningState(true);
-            this.addMessage('system', 'Listening... Speak now');
+            //this.addMessage('system', 'Listening... Speak now');
             
             const stream = await navigator.mediaDevices.getUserMedia({ 
                 audio: {
@@ -98,13 +98,13 @@ class VoiceChat {
         // Stop listening if active
         if (this.isListening) {
             this.stopListening();
-            this.addMessage('system', 'Stopped listening');
+            this.addMessage('system', 'You stopped the listening');
         }
         
         // Stop processing if active - we can't actually stop a fetch request
         // but we can handle the response appropriately
         if (this.isProcessing) {
-            this.addMessage('system', 'Processing cancelled');
+            this.addMessage('system', 'You cancelled the processing');
             this.setProcessingState(false);
         }
         
@@ -120,7 +120,7 @@ class VoiceChat {
             this.responseAudio.currentTime = 0;
             
             this.setSpeakingState(false);
-            this.addMessage('system', 'Stop All button pressed');
+            //this.addMessage('system', 'Stop All button pressed');
         }
     }
 
@@ -190,9 +190,9 @@ speakText(text) {
 
             const utterance = new SpeechSynthesisUtterance(text);
 
-            // Voice settings for male-like characteristics
-            utterance.rate = 0.92;   // slightly slower, more natural
-            utterance.pitch = 0.85;  // even deeper tone for male voice
+            // Voice settings for female Indian English characteristics
+            utterance.rate = 0.95;   // natural speaking pace
+            utterance.pitch = 1.1;   // slightly higher pitch for female voice
             utterance.volume = 1.0;
 
             // Get available voices
@@ -203,13 +203,13 @@ speakText(text) {
                 return new Promise(resolve => {
                     speechSynthesis.onvoiceschanged = () => {
                         voices = speechSynthesis.getVoices();
-                        this.speakWithMaleVoice(text, voices);
+                        this.speakWithFemaleVoice(text, voices);
                         resolve();
                     };
                 });
             }
 
-            this.speakWithMaleVoice(text, voices);
+            this.speakWithFemaleVoice(text, voices);
 
         } catch (error) {
             console.error("Error in text-to-speech:", error);
@@ -221,40 +221,39 @@ speakText(text) {
     }
 }
 
-// New helper method for male voice selection
-speakWithMaleVoice(text, voices) {
+// New helper method for female voice selection
+speakWithFemaleVoice(text, voices) {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.92;
-    utterance.pitch = 0.85;
+    utterance.rate = 0.95;
+    utterance.pitch = 1.1;
     utterance.volume = 1.0;
 
     // Detect language
     const isHindi = /[\u0900-\u097F]/.test(text);
     
-    // Male voice patterns to look for in voice names
-    const maleVoicePatterns = [
-        'male', 'masculine', 'man', 'david', 'thomas', 'john', 'paul',
-        'deep', 'low', 'google uk male', 'microsoft david', 'microsoft zira',
-        'damien', 'daniel', 'felipe', 'kyoko', 'otto', 'sin-ji' // Some male identifiers
+    // Female voice patterns to look for in voice names
+    const femaleVoicePatterns = [
+        'female', 'feminine', 'woman', 'veena', 'samantha', 'karen', 
+        'lekha', 'neelam', 'google uk female', 'microsoft zira'
     ];
 
     // Language-specific voice preferences
     const languageCode = isHindi ? 'hi' : 'en';
     
-    // Find the best male voice
-    let selectedVoice = this.findMaleVoice(voices, languageCode, maleVoicePatterns);
+    // Find the best female voice
+    let selectedVoice = this.findFemaleVoice(voices, languageCode, femaleVoicePatterns);
 
     if (selectedVoice) {
         utterance.voice = selectedVoice;
         utterance.lang = selectedVoice.lang; // Set the exact language
-        console.log("🎙 Using male voice:", selectedVoice.name, selectedVoice.lang);
+        console.log("🎙 Using female voice:", selectedVoice.name, selectedVoice.lang);
     } else {
         // Fallback: any voice for the correct language
         selectedVoice = voices.find(v => v.lang.includes(languageCode));
         if (selectedVoice) {
             utterance.voice = selectedVoice;
             utterance.lang = selectedVoice.lang;
-            console.warn("⚠️ No specific male voice found, using:", selectedVoice.name);
+            console.warn("⚠️ No specific female voice found, using:", selectedVoice.name);
         } else {
             console.warn("⚠️ No suitable voice found, using default");
         }
@@ -266,36 +265,36 @@ speakWithMaleVoice(text, voices) {
     utterance.onerror = (event) => {
         console.error("Speech synthesis error:", event);
         this.setSpeakingState(false);
-        this.addMessage("system", "Response stopped.");
+        this.addMessage("system", "You stopped the response.");
     };
 
     // Speak now
     speechSynthesis.speak(utterance);
 }
 
-// Helper function to find male voices
-findMaleVoice(voices, languageCode, malePatterns) {
-    // First priority: Exact male matches for the language
+// Helper function to find female voices
+findFemaleVoice(voices, languageCode, femalePatterns) {
+    // First priority: Exact female matches for the language
     for (const voice of voices) {
         if (voice.lang.includes(languageCode)) {
             const voiceName = voice.name.toLowerCase();
-            if (malePatterns.some(pattern => voiceName.includes(pattern))) {
+            if (femalePatterns.some(pattern => voiceName.includes(pattern))) {
                 return voice;
             }
         }
     }
     
-    // Second priority: Any voice for the language with lower pitch potential
+    // Second priority: Any voice for the language with higher pitch potential
     for (const voice of voices) {
         if (voice.lang.includes(languageCode)) {
             const voiceName = voice.name.toLowerCase();
-            // Avoid obviously female identifiers
-            if (!voiceName.includes('female') && 
-                !voiceName.includes('woman') && 
-                !voiceName.includes('zira') && 
-                !voiceName.includes('karen') &&
-                !voiceName.includes('samantha') &&
-                !voiceName.includes('veena')) {
+            // Avoid obviously male identifiers
+            if (!voiceName.includes('male') && 
+                !voiceName.includes('man') && 
+                !voiceName.includes('david') && 
+                !voiceName.includes('thomas') &&
+                !voiceName.includes('deep') &&
+                !voiceName.includes('microsoft david')) {
                 return voice;
             }
         }
@@ -304,67 +303,67 @@ findMaleVoice(voices, languageCode, malePatterns) {
     return null;
 }
 
-    addMessage(sender, text) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}`;
-        
-        const timestamp = new Date().toLocaleTimeString();
-        messageDiv.innerHTML = `
-            <div>${text}</div>
-            <span class="timestamp">${timestamp}</span>
-        `;
-        
-        this.chatMessages.appendChild(messageDiv);
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-    }
+addMessage(sender, text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    
+    const timestamp = new Date().toLocaleTimeString();
+    messageDiv.innerHTML = `
+        <div>${text}</div>
+        <span class="timestamp">${timestamp}</span>
+    `;
+    
+    this.chatMessages.appendChild(messageDiv);
+    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+}
 
-    setListeningState(listening) {
-        this.isListening = listening;
-        
-        if (listening) {
-            this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone"></i></span>';
-            this.micBtn.classList.add('listening');
-            this.updateStatus('listening', 'Listening...');
-        } 
-        else {
-            this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone-slash"></i></span>';
-            this.micBtn.classList.remove('listening');
-        }
-        
-        this.stopBtn.disabled = !(this.isListening || this.isProcessing || this.isSpeaking);
+setListeningState(listening) {
+    this.isListening = listening;
+    
+    if (listening) {
+        this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone"></i></span>';
+        this.micBtn.classList.add('listening');
+        this.updateStatus('listening', 'Listening...');
+    } 
+    else {
+        this.micBtn.innerHTML = '<span class="icon"><i class="fas fa-microphone-slash"></i></span>';
+        this.micBtn.classList.remove('listening');
     }
+    
+    this.stopBtn.disabled = !(this.isListening || this.isProcessing || this.isSpeaking);
+}
 
-    setProcessingState(processing) {
-        this.isProcessing = processing;
-        
-        if (processing) {
-            this.updateStatus('processing', 'Processing...');
-        } else if (!this.isListening && !this.isSpeaking) {
-            this.updateStatus('connected', 'Ready');
-        }
-        
-        this.stopBtn.disabled = !(this.isListening || this.isProcessing || this.isSpeaking);
+setProcessingState(processing) {
+    this.isProcessing = processing;
+    
+    if (processing) {
+        this.updateStatus('processing', 'Processing...');
+    } else if (!this.isListening && !this.isSpeaking) {
+        this.updateStatus('connected', 'Ready');
     }
+    
+    this.stopBtn.disabled = !(this.isListening || this.isProcessing || this.isSpeaking);
+}
 
-    setSpeakingState(speaking) {
-        this.isSpeaking = speaking;
-        
-        if (speaking) {
-            this.updateStatus('speaking', 'AI is speaking');
-        } else if (!this.isListening && !this.isProcessing) {
-            this.updateStatus('connected', 'Ready');
-        }
-        
-        this.stopBtn.disabled = !(this.isListening || this.isProcessing || this.isSpeaking);
+setSpeakingState(speaking) {
+    this.isSpeaking = speaking;
+    
+    if (speaking) {
+        this.updateStatus('speaking', 'AI is speaking');
+    } else if (!this.isListening && !this.isProcessing) {
+        this.updateStatus('connected', 'Ready');
     }
+    
+    this.stopBtn.disabled = !(this.isListening || this.isProcessing || this.isSpeaking);
+}
 
-    updateStatus(state, text) {
-        this.statusIndicator.className = 'status-indicator';
-        if (state !== 'connected') {
-            this.statusIndicator.classList.add(state);
-        }
-        this.statusText.textContent = text;
+updateStatus(state, text) {
+    this.statusIndicator.className = 'status-indicator';
+    if (state !== 'connected') {
+        this.statusIndicator.classList.add(state);
     }
+    this.statusText.textContent = text;
+  }
 }
 
 // Initialize the voice chat when the page loads
