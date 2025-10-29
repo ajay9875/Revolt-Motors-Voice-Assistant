@@ -19,7 +19,7 @@ app.use(express.json());
 // Get API key from environment variables
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 // Switch to a model that handles Hindi + English
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 console.log('Using Gemini API Key:', GEMINI_API_KEY ? 'Present' : 'Missing');
 console.log("Gemini URL:", GEMINI_URL);
